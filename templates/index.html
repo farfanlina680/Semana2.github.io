@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Despliegue IIS</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .sites-container { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 20px; }
+        .site-item { background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .site-header { display: flex; align-items: center; }
+        .site-header input[type="checkbox"] { margin-right: 10px; }
+        .apps-container { margin-left: 30px; margin-top: 10px; }
+        .app-item { margin-bottom: 8px; padding-left: 10px; border-left: 2px solid #3498db; }
+        .form-actions { margin-top: 25px; text-align: center; }
+        .btn { display: inline-block; padding: 12px 25px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; border: none; cursor: pointer; font-size: 16px; transition: background-color 0.3s; }
+        .btn:hover { background-color: #2980b9; }
+        .site-label { font-weight: bold; font-size: 1.1em; color: #2c3e50; }
+        .app-label { font-size: 1em; color: #34495e; }
+    </style>
+</head>
+<body>
+    <h1>Seleccionar Sitios/Aplicaciones para Despliegue</h1>
+    <form method="post" action="/seleccionar">
+        <div class="sites-container">
+            {% for sitio, apps in sites.items() %}
+            <div class="site-item">
+                <div class="site-header">
+                    <input type="checkbox" name="sites" value="{{ sitio }}" 
+                           id="sitio_{{ sitio }}" 
+                           {% if sitio in selected_sites %}checked{% endif %}>
+                    <label class="site-label" for="sitio_{{ sitio }}">{{ sitio }} (Sitio)</label>
+                </div>
+                {% if apps %}
+                <div class="apps-container">
+                    {% for app in apps %}
+                    <div class="app-item">
+                        <input type="checkbox" name="sites" value="{{ sitio }}/{{ app }}" 
+                               id="app_{{ sitio }}_{{ app }}" 
+                               {% if sitio + '/' + app in selected_sites %}checked{% endif %}>
+                        <label class="app-label" for="app_{{ sitio }}_{{ app }}">{{ app }} (Aplicación)</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn">Continuar</button>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Configuración de Despliegue</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .summary-table { width: 100%; border-collapse: collapse; margin: 25px 0; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .summary-table th, .summary-table td { border: 1px solid #e0e0e0; padding: 12px 15px; text-align: left; }
+        .summary-table th { background-color: #3498db; color: white; font-weight: bold; }
+        .summary-table tr:nth-child(even) { background-color: #f8f9fa; }
+        .form-actions { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        .btn { display: inline-block; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: all 0.3s; text-align: center; }
+        .btn-back { background-color: #e74c3c; color: white; }
+        .btn-back:hover { background-color: #c0392b; }
+        .btn-continue { background-color: #2ecc71; color: white; }
+        .btn-continue:hover { background-color: #27ae60; }
+        .config-option { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+        .config-group { margin: 15px 0; }
+        .config-label { font-weight: bold; margin-bottom: 5px; }
+        .file-path-input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Configuración de Despliegue</h1>
+    <form method="post" action="/config_sitios">
+        <table class="summary-table">
+            <thead>
+                <tr>
+                    <th>Sitio/Aplicación</th>
+                    <th>Ruta Física</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for site in sites %}
+                <tr>
+                    <td>{{ site.nombre }}</td>
+                    <td>{{ site.ruta }}</td>
+                    <td>
+                        <div class="config-group">
+                            <div class="config-option">
+                                <input type="checkbox" name="eliminar_{{ site.nombre }}" id="eliminar_{{ site.nombre }}" value="1">
+                                <label for="eliminar_{{ site.nombre }}">Eliminar archivos existentes</label>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <div class="config-label">Reemplazar archivos de configuración:</div>
+                            <div class="config-option">
+                                <input type="checkbox" name="reemplazar_webconfig_{{ site.nombre }}" id="reemplazar_webconfig_{{ site.nombre }}" value="1">
+                                <label for="reemplazar_webconfig_{{ site.nombre }}">web.config</label>
+                            </div>
+                            <div class="config-option">
+                                <input type="checkbox" name="reemplazar_appsettings_{{ site.nombre }}" id="reemplazar_appsettings_{{ site.nombre }}" value="1">
+                                <label for="reemplazar_appsettings_{{ site.nombre }}">appsettings.json</label>
+                            </div>
+                            <div class="config-option">
+                                <input type="checkbox" name="reemplazar_appsettings_prod_{{ site.nombre }}" id="reemplazar_appsettings_prod_{{ site.nombre }}" value="1">
+                                <label for="reemplazar_appsettings_prod_{{ site.nombre }}">appsettings.production.json</label>
+                            </div>
+                        </div>
+                        
+                        <div class="config-group">
+                            <label for="new_files_{{ site.nombre }}">Ruta nuevos archivos:</label>
+                            <input type="text" name="new_files_{{ site.nombre }}" id="new_files_{{ site.nombre }}" required class="file-path-input">
+                        </div>
+
+                        <div class="config-group">
+                            <label for="archivos_adicionales_{{ site.nombre }}">No reemplazar otros archivos (separados por coma):</label>
+                            <input type="text" name="archivos_adicionales_{{ site.nombre }}" id="archivos_adicionales_{{ site.nombre }}" placeholder="Ej: robots.txt, sitemap.xml" class="file-path-input">
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="form-actions">
+            <a href="/volver" class="btn btn-back">← Volver</a>
+            <button type="submit" class="btn btn-continue">Iniciar Despliegue</button>
+        </div>
+    </form>
+</body>
+</html>

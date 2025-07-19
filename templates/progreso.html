@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Progreso del Despliegue</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .progress-container { 
+            background-color: #ffffff; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin: 0 auto; 
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .progress-message { 
+            padding: 12px 15px; 
+            border-bottom: 1px solid #eee; 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            font-size: 15px; 
+        }
+        .progress-message:last-child { 
+            border-bottom: none; 
+        }
+        .spinner { 
+            border: 5px solid #f3f3f3; 
+            border-top: 5px solid #3498db; 
+            border-radius: 50%; 
+            width: 50px; 
+            height: 50px; 
+            animation: spin 1s linear infinite; 
+            margin: 20px auto;
+            display: block;
+        }
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressContainer = document.getElementById('progress-messages');
+            const spinner = document.getElementById('spinner');
+            
+            // Función para actualizar el progreso
+            function updateProgress() {
+                fetch('/get_progress')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Limpiar contenedor
+                        progressContainer.innerHTML = '';
+                        
+                        // Mostrar mensajes
+                        data.progress.forEach(message => {
+                            const messageElement = document.createElement('div');
+                            messageElement.className = 'progress-message';
+                            messageElement.textContent = message;
+                            progressContainer.appendChild(messageElement);
+                        });
+                        
+                        // Auto-scroll al final
+                        progressContainer.scrollTop = progressContainer.scrollHeight;
+                        
+                        // Si el despliegue está activo, seguir actualizando
+                        if (data.active) {
+                            setTimeout(updateProgress, 1000);
+                        } 
+                        // Si se completó, redirigir a resultados
+                        else if (data.completed) {
+                            window.location.href = '/resultados';
+                        }
+                        // Si no está activo pero tampoco completado, seguir intentando
+                        else {
+                            setTimeout(updateProgress, 1000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error obteniendo progreso:', error);
+                        setTimeout(updateProgress, 2000);
+                    });
+            }
+            
+            // Iniciar actualización
+            updateProgress();
+        });
+    </script>
+</head>
+<body>
+    <div class="progress-container" id="progress-messages">
+        <div class="progress-message">Iniciando seguimiento del despliegue...</div>
+    </div>
+    
+    <div id="spinner" class="spinner"></div>
+</body>
+</html>

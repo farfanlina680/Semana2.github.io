@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultados del Despliegue</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .progress-container { 
+            background-color: #ffffff; 
+            border: 1px solid #e0e0e0; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin-bottom: 30px;
+            max-height: 50vh;
+            overflow-y: auto; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .progress-message { 
+            padding: 10px; 
+            border-bottom: 1px solid #eee; 
+            font-family: 'Consolas', 'Courier New', monospace; 
+            font-size: 14px; 
+        }
+        .progress-message:last-child { 
+            border-bottom: none; 
+        }
+        .result-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .result-table th, .result-table td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px 15px; 
+            text-align: left; 
+        }
+        .result-table th { 
+            background-color: #3498db; 
+            color: white; 
+            font-weight: bold; 
+        }
+        .success-row { 
+            background-color: #e8f5e9; 
+        }
+        .error-row { 
+            background-color: #ffebee; 
+        }
+        .btn { 
+            display: inline-block; 
+            padding: 12px 30px; 
+            background-color: #3498db; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            font-size: 16px; 
+            transition: background-color 0.3s; 
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover { 
+            background-color: #2980b9; 
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Resultados del Despliegue</h1>
+        
+        <h2>Progreso del Despliegue</h2>
+        <div class="progress-container">
+            {% for mensaje in progreso %}
+            <div class="progress-message">{{ mensaje }}</div>
+            {% endfor %}
+        </div>
+        
+        <h2>Resumen por Sitio/Aplicación</h2>
+        <table class="result-table">
+            <thead>
+                <tr>
+                    <th>Sitio/Aplicación</th>
+                    <th>Estado</th>
+                    <th>Mensaje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for res in resultados %}
+                <tr class="{% if res.estado == 'Completado' %}success-row{% else %}error-row{% endif %}">
+                    <td>{{ res.nombre }}</td>
+                    <td>{{ res.estado }}</td>
+                    <td>{{ res.mensaje }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="btn-container">
+            <a href="/" class="btn">Volver al inicio</a>
+        </div>
+    </div>
+</body>
+</html>
